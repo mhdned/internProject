@@ -52,12 +52,16 @@ const userSchema = new mongoose.Schema({
   status: { type: Boolean, default: false },
   verified: { type: Boolean, default: false },
   filesId: { type: mongoose.Types.ObjectId, ref: "Files" },
+},
+{
+  timestamps : true
 });
 /*------<MIDDLEWARE USER MODEL>------*/
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
   this.password = await bcrypt.hash(this.password, 12);
   this.passwordConfirm = undefined;
+  this.updatedAt = undefined;
 });
 
 userSchema.methods.comparePassword = async function (
